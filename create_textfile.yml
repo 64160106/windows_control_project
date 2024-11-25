@@ -1,15 +1,13 @@
 ---
 - name: Create a text file on Windows Server
   hosts: windows_servers
-  collections:
-    - ansible.windows
   tasks:
     - name: Create an empty text file
       win_file:
-        path: C:\temp\testfile.txt
+        path: C:\temp\example.txt
         state: touch
 
     - name: Write content to the text file
-      win_shell:
-        cmd: |
-          Add-Content -Path "C:\temp\testfile.txt" -Value "Hello, this is a test file created by Ansible!"
+      win_lineinfile:
+        path: C:\temp\example.txt
+        line: "This is a sample content."
