@@ -1,12 +1,11 @@
 ---
-  - name: Copy Notepad++ installer to Windows host
-    hosts: 10.244.163.154
-    gather_facts: yes
-    collections:
+- name: Test Windows connection with service management
+  hosts: windows_servers
+  gather_facts: yes
+  collections:
       - ansible.windows
-    tasks:
-      - name: Copy Notepad++ installer to Windows host
-        win_copy:
-          src: /path/to/notepad++_installer.exe
-          dest: C:\temp\notepad++_installer.exe
-  
+  tasks:
+    - name: Check the status of the Windows Update service
+      ansible.windows.win_service:
+        name: wuauserv  
+        state: started   
