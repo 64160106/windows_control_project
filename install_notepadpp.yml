@@ -1,6 +1,6 @@
 ---
   - name: Copy Notepad++ installer to Windows host
-    hosts: 10.244.163.154
+    hosts: windows_servers
     gather_facts: yes
     collections:
       - ansible.windows
