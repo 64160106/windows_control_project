@@ -1,6 +1,6 @@
 ---
 - name: Test Windows connectivity with win_ping
-  hosts: WIndows Servers 
+  hosts: Windows
   gather_facts: no 
   tasks:
     - name: Ping Windows host
