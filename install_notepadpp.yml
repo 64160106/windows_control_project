@@ -1,11 +1,7 @@
 ---
-- name: Test Windows connection with service management
-  hosts: windows_servers
-  gather_facts: yes
-  collections:
-      - ansible.windows
+- name: Test Windows connectivity with win_ping
+  hosts: windows_servers  
+  gather_facts: no  
   tasks:
-    - name: Check the status of the Windows Update service
-      ansible.windows.win_service:
-        name: wuauserv  
-        state: started   
+    - name: Ping Windows host
+      ansible.windows.win_ping:
