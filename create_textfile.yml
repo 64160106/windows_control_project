@@ -11,4 +11,5 @@
 
     - name: Write content to the text file
       win_shell:
-        cmd: echo "Hello, this is a test file created by Ansible!" > C:\temp\testfile.txt
+        cmd: |
+          Add-Content -Path "C:\temp\testfile.txt" -Value "Hello, this is a test file created by Ansible!"
