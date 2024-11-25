@@ -1,12 +1,12 @@
 ---
-- name: Install Notepad++ on Windows
-  hosts: all
-  tasks:
-    - name: Copy Notepad++ installer to Windows host
-      ansible.windows.win_copy:
-        src: files/npp_installer.exe
-        dest: C:\Temp\npp_installer.exe
-
-    - name: Install Notepad++
-      ansible.windows.win_shell:
-        cmd: 'C:\Temp\npp_installer.exe /S'
+  - name: Copy Notepad++ installer to Windows host
+    hosts: windows_servers
+    gather_facts: yes
+    collections:
+      - ansible.windows
+    tasks:
+      - name: Copy Notepad++ installer to Windows host
+        win_copy:
+          src: /path/to/notepad++_installer.exe
+          dest: C:\temp\notepad++_installer.exe
+  
