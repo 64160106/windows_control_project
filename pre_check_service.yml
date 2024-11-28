@@ -1,11 +1,13 @@
 ---
 - name: Pre-check for windows
-  hosts: windows_servers
+  hosts: all
+  vars:
+    service: "wuauserv"  # กำหนดชื่อของ service ที่จะตรวจสอบ (Windows Update service)
   tasks:
     # ตรวจสอบบริการที่ระบุว่ามีอยู่หรือไม่
     - name: (Windows) Pre-check service ({{ service }})
       ansible.windows.win_service:
-        name: "{{ service }}"  # ใส่เครื่องหมายคำพูดรอบตัวแปร service
+        name: "{{ service }}"
       register: check_result
       when: ansible_facts['os_family'] == "Windows"
 
