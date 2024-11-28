@@ -1,0 +1,6 @@
+---
+- name : Run command ({{ command }})
+  ansible.builtin.command: 
+    cmd: "{{ command }}"
+    
+  when: ansible_facts['os_family'] != "Windows" 
