@@ -1,0 +1,41 @@
+---
+
+#post-check for windows
+- name: (Window) Post-check service ({{ service }})
+  ansible.windows.win_service:
+    name: windows_servers
+  
+  when: ansible_facts['os_family'] == "Windows"
+
+- name: (Window) Ensure Window service ({{ service }}) starts after rebooted
+  win_service:
+    name: "{{ service }}"
+    state: started
+  register: check_result
+  until: check_result.state == 'running'
+  retries: 15
+  delay: 20
+  when: ansible_facts['os_family'] == "Windows"  
+
+- name: (Window) Append if service is running 
+  set_fact:
+    postcheckservice: "{{ postcheckservice + [ service ] }}"
+  when: 
+    - ansible_facts['os_family'] == 'Windows'
+    - check_result.state == 'running'
+
+
+
+
+# - name: Show result ("{{ service }}"")
+#   debug:
+#     msg: "{% if check_result['exists'] == true %}Found{% else %}'Not found{% endif %}"
+
+# - name: Append if service is missing ("{{ service }}")
+#   set_fact:
+#     missing: "{{ missing + [ service ] }}"
+#   when: "not check_result.exists"
+
+
+
+
