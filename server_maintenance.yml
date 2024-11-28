@@ -47,8 +47,10 @@
       when: ansible_facts['os_family'] != "Windows"
 
     ### Reboot the server
-    - name: Reboot
-      include_tasks: reboot.yaml
+    - name: Reboot Windows server
+      win_reboot:
+        reboot_timeout: 3600
+      when: ansible_facts['os_family'] == "Windows"
 
     ### Post-check service after reboot
     - name: Post-check service after Reboot
