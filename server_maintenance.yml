@@ -2,10 +2,10 @@
 - name: Server Maintenance
   hosts: all
 
-  # Loading the list of services and list of commands
+  # Loading the list of services and list of commands using relative paths
   vars_files:
-    - 'C:/projects/win_control_project/services.yaml'  # ใช้ '/' แทน '\\' หรือใช้ 'C:\\'
-    - 'C:/projects/win_control_project/listcommand.yaml'  # ใช้ '/' แทน '\\'
+    - services.yaml  # ใช้ relative path สำหรับ services.yaml
+    - listcommand.yaml  # ใช้ relative path สำหรับ listcommand.yaml
 
   tasks:
     - name: Set Variable
@@ -70,3 +70,22 @@
               - Missing services: {{ missing }}
           {% endif %}
       failed_when: "precheckservice != postcheckservice"
+
+    ### Optional: Check if services.yaml and listcommand.yaml exist
+    - name: Check if services.yaml file exists
+      ansible.builtin.stat:
+        path: "./services.yaml"  # ตรวจสอบว่าไฟล์ services.yaml มีอยู่ใน directory เดียวกัน
+      register: services_file_status
+
+    - name: Check if listcommand.yaml file exists
+      ansible.builtin.stat:
+        path: "./listcommand.yaml"  # ตรวจสอบว่าไฟล์ listcommand.yaml มีอยู่ใน directory เดียวกัน
+      register: listcommand_file_status
+
+    - name: Debug output for services.yaml file existence
+      debug:
+        msg: "services.yaml file exists: {{ services_file_status.stat.exists }}"
+
+    - name: Debug output for listcommand.yaml file existence
+      debug:
+        msg: "listcommand.yaml file exists: {{ listcommand_file_status.stat.exists }}"
