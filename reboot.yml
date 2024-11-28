@@ -1,54 +1,35 @@
 ---
-# Reboot Playbook
+# Reboot Playbook for Windows
 - name: Reboot and wait for service readiness
   hosts: all
   tasks:
-    - name: Reboot server
-      block:
-        - name: Reboot Windows server
-          win_reboot:
-            reboot_timeout: 3600
-          when: ansible_facts['os_family'] == "Windows"
+    - name: Reboot Windows server
+      win_reboot:
+        reboot_timeout: 3600
+      when: ansible_facts['os_family'] == "Windows"
 
-        - name: Reboot non-Windows server
-          reboot:
-          when: ansible_facts['os_family'] != "Windows"
+    - name: Get timestamp before holding (Windows)
+      win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
+      register: timestmp
+      when: ansible_facts['os_family'] == "Windows"
 
-    - name: Get timestamp before holding
-      block:
-        - name: Get timestamp (Windows)
-          win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
-          register: timestmp
-          when: ansible_facts['os_family'] == "Windows"
+    - name: Debug timestamp before holding
+      debug:
+        msg: "Timestamp before holding: {{ timestmp.stdout }}"
+      when: timestmp is defined
 
-        - name: Get timestamp (Linux/Other)
-          shell: "date '+%Y-%m-%d %H:%M:%S'"
-          register: timestmp
-          when: ansible_facts['os_family'] != "Windows"
-
-        - name: Debug timestamp
-          debug:
-            msg: "Timestamp before holding: {{ timestmp.stdout }}"
-          when: timestmp is defined
-
-    - name: Holding 300 seconds for service to start
+    - name: Holding 300 seconds for service to start (Windows)
       wait_for:
         timeout: 300
         delay: 0
+      when: ansible_facts['os_family'] == "Windows"
 
-    - name: Get timestamp after holding
-      block:
-        - name: Get timestamp (Windows)
-          win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
-          register: timestmp_after
-          when: ansible_facts['os_family'] == "Windows"
+    - name: Get timestamp after holding (Windows)
+      win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
+      register: timestmp_after
+      when: ansible_facts['os_family'] == "Windows"
 
-        - name: Get timestamp (Linux/Other)
-          shell: "date '+%Y-%m-%d %H:%M:%S'"
-          register: timestmp_after
-          when: ansible_facts['os_family'] != "Windows"
-
-        - name: Debug timestamp
-          debug:
-            msg: "Timestamp after holding: {{ timestmp_after.stdout }}"
-          when: timestmp_after is defined
+    - name: Debug timestamp after holding
+      debug:
+        msg: "Timestamp after holding: {{ timestmp_after.stdout }}"
+      when: timestmp_after is defined
