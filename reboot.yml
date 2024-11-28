@@ -1,0 +1,40 @@
+---
+##### Reboot Playbook
+- name : Reboot server ({{ inventory_hostname }})
+  win_reboot:
+      reboot_timeout: 3600
+  when: ansible_facts['os_family'] == "Windows"
+
+- name : Reboot server ({{ inventory_hostname }})
+  reboot:
+  when: ansible_facts['os_family'] != "Windows"
+
+#get time stamp
+# - name : Get time stamp before holding ({{ inventory_hostname }})
+#   shell: "date"
+#   register: timestmp
+#   when: ansible_facts['os_family'] != "Windows"
+
+# - name : Debug time stamp ({{ inventory_hostname }})
+#   debug:
+#     msg: "Before holding  {{ timestmp }}"
+#   when: ansible_facts['os_family'] != "Windows"
+#--------------
+
+#Holding time
+- name : Holding 300 secount for service start. ({{ inventory_hostname }})
+  wait_for:
+  when: ansible_facts['os_family'] != "Windows"
+#-------------
+
+#get time stamp
+# - name : Get time stamp after holding ({{ inventory_hostname }})
+#   shell: "date"
+#   register: timestmp
+#   when: ansible_facts['os_family'] != "Windows"
+
+# - name : Debug time stamp ({{ inventory_hostname }})
+#   debug:
+#     msg: "After holding {{ timestmp }}"
+#   when: ansible_facts['os_family'] != "Windows"
+#--------------
