@@ -7,14 +7,18 @@
         name: MyWindowsService
       register: service_status
 
+    - name: Debug service_status
+      ansible.builtin.debug:
+        var: service_status
+
     - name: Restart the service if it is stopped
       win_service:
         name: MyWindowsService
         state: started
-      when: service_status.status != 'running' or service_status.start_mode != 'Auto'
+      when: service_status['changed'] == false or service_status['desired_state'] != 'Running'
 
     - name: Log service status to a file
       win_lineinfile:
         path: C:\temp\service_status.log
-        line: "Service 'MyWindowsService' was found {{ service_status.status }} at {{ ansible_date_time.iso8601 }}."
+        line: "Service 'MyWindowsService' was found {{ service_status['desired_state'] }} at {{ ansible_date_time.iso8601 }}."
         create: yes
