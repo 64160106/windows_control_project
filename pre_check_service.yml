@@ -1,36 +1,30 @@
 ---
+- name: Pre-check for windows
+  hosts: windows_servers
+  tasks:
+    # ดึงข้อมูลเกี่ยวกับบริการ (service) ทั้งหมดในเครื่อง
+    - name: (Windows) Gather service facts
+      ansible.windows.win_service_facts:
 
-#Pre-check for windows
-- name: (Window) Pre-check service ({{ service }})
-  ansible.windows.win_service:
-    name: "{{ service }}"
-  register: check_result
-  when: ansible_facts['os_family'] == "Windows"
+    # ตรวจสอบว่า Service มีอยู่หรือไม่
+    - name: Check if service exists and append if exists
+      set_fact:
+        precheckservice: "{{ precheckservice | default([]) + [ service ] }}"
+      when: "'{{ service }}' in ansible_facts.services"
 
-# - name: (Window) Ensure service ({{ service }}) starts before reboot
-#   win_service:
-#     name: "{{ service }}"
-#     state: started
-#   when: ansible_facts['os_family'] == "Windows"  
+    # ตรวจสอบว่า Service หายไปและเก็บข้อมูลบริการที่ขาดหายไป
+    - name: Append if service is missing
+      set_fact:
+        missing: "{{ missing | default([]) + [ service ] }}"
+      when: "'{{ service }}' not in ansible_facts.services"
 
-- name: (Window) Append if service is exists 
-  set_fact:
-    precheckservice: "{{ precheckservice + [ service ] }}"
-  when: 
-    - ansible_facts['os_family'] == 'Windows'
+    # แสดงผลลัพธ์ของการตรวจสอบ
+    - name: Show services that exist
+      debug:
+        msg: "The following services exist: {{ precheckservice }}"
+      when: precheckservice | length > 0
 
-
-
-
-# - name: Show result ("{{ service }}"")
-#   debug:
-#     msg: "{% if check_result['exists'] == true %}Found{% else %}'Not found{% endif %}"
-
-# - name: Append if service is missing ("{{ service }}")
-#   set_fact:
-#     missing: "{{ missing + [ service ] }}"
-#   when: "not check_result.exists"
-
-
-
-
+    - name: Show services that are missing
+      debug:
+        msg: "The following services are missing: {{ missing }}"
+      when: missing | length > 0
