@@ -1,0 +1,182 @@
+---
+###### When you have a new server to maintenance and it have service to check. Add here
+services:
+  windowtest1:
+    - Windows Time
+    - WinRM
+  windowtest2:
+    - Group Policy Client
+  ubuntutest1:
+    - ssh
+  BKK-PYTHON-01:
+    - ssh
+  BKK-LINE:
+    - Apache2.4
+    - mysql
+    - Check_MK_Agent
+  BKK-PRNT01:
+    - Print Spooler
+  BKK-RDP-01:
+    - Remote Desktop Configuration
+    - Remote Desktop Services
+    - Remote Desktop Services UserMode Port Redirector
+    - Remote Procedure Call (RPC)
+  BKK-RDP-02:
+    - Remote Desktop Configuration
+    - Remote Desktop Services
+    - Remote Desktop Services UserMode Port Redirector
+    - Remote Procedure Call (RPC)
+  BKK-RDP-03:
+    - Remote Desktop Configuration
+    - Remote Desktop Services
+    - Remote Desktop Services UserMode Port Redirector
+    - Remote Procedure Call (RPC)
+  BKK-Veeam-PRD01:
+    - Veeam AHV Service
+    - Veeam AWS Service
+    - Veeam Azure Service
+    - Veeam Backup for Microsoft Office 365 Service
+    - Veeam Backup Proxy for Microsoft Office 365 Service
+    - Veeam Backup Server RESTful API Service
+    - Veeam Backup Service
+    - Veeam Backup VSS Integration Service
+    - Veeam Broker Service
+    - Veeam CDP Coordinator Service
+    - Veeam Cloud Connect Service
+    - Veeam Data Mover Service
+    - Veeam Distribution Service
+    - Veeam Explorers Recovery Service
+    - Veeam Guest Catalog Service
+    - Veeam Installer Service
+    - Veeam Mount Service
+    - Veeam vPower NFS Service
+    - Veeam VSS Hardware Provider Service
+  BKK-WFMAN:
+    - Symantec Embedded Database
+    #- Symantec Endpoint Protection
+    - Symantec Endpoint Protection Manager Webserver
+    - Symantec Endpoint Protection Manager
+    - Symantec Endpoint Protection Launcher
+    - Symantec Endpoint Protection Manager API Service
+  BKK-PATCH:
+    - ManageEngine ADAudit Plus
+    #- ManageEngine Patch Manager Plus Server
+  BKK-RADIUS:
+    - DHCP Server
+    - Network Policy Server
+  #BKK-scripts01:  Need Manual Check Now
+  #  - 
+  BKK-SIEM-001:
+    - ManageEngine EventLog Analyzer 12.0.3
+  BKK-WPS-004:
+    - World Wide Web Publishing Service
+    - Application Host Helper Service
+  SNT-AD01:
+    - Active Directory Domain Services
+    - DNS Server
+  BKK-DAG01-MB01:
+    - Microsoft Exchange Active Directory Topology
+    - Microsoft Exchange Anti-spam Update
+    - Microsoft Exchange Compliance Audit
+    - Microsoft Exchange Compliance Service
+    - Microsoft Exchange DAG Management
+    - Microsoft Exchange Diagnostics
+    - Microsoft Exchange EdgeSync
+    - Microsoft Exchange Frontend Transport
+    - Microsoft Exchange Health Manager
+    - Microsoft Exchange Health Manager Recovery
+    - Microsoft Exchange Information Store
+    - Microsoft Exchange Mailbox Assistants
+    - Microsoft Exchange Mailbox Replication
+    - Microsoft Exchange Mailbox Transport Delivery
+    - Microsoft Exchange Mailbox Transport Submission
+    - Microsoft Exchange Replication
+    - Microsoft Exchange RPC Client Access
+    - Microsoft Exchange Search
+    - Microsoft Exchange Search Host Controller
+    - Microsoft Exchange Service Host
+    - Microsoft Exchange Throttling
+    - Microsoft Exchange Transport
+    - Microsoft Exchange Transport Log Search
+    - Microsoft Exchange Unified Messaging
+    - Microsoft Exchange Unified Messaging Call Router
+    - Microsoft Filtering Management Service
+  BKK-DAG01-MB02:
+    - Microsoft Exchange Active Directory Topology
+    - Microsoft Exchange Anti-spam Update
+    - Microsoft Exchange Compliance Audit
+    - Microsoft Exchange Compliance Service
+    - Microsoft Exchange DAG Management
+    - Microsoft Exchange Diagnostics
+    - Microsoft Exchange EdgeSync
+    - Microsoft Exchange Frontend Transport
+    - Microsoft Exchange Health Manager
+    - Microsoft Exchange Health Manager Recovery
+    - Microsoft Exchange Information Store
+    - Microsoft Exchange Mailbox Assistants
+    - Microsoft Exchange Mailbox Replication
+    - Microsoft Exchange Mailbox Transport Delivery
+    - Microsoft Exchange Mailbox Transport Submission
+    - Microsoft Exchange Replication
+    - Microsoft Exchange RPC Client Access
+    - Microsoft Exchange Search
+    - Microsoft Exchange Search Host Controller
+    - Microsoft Exchange Service Host
+    - Microsoft Exchange Throttling
+    - Microsoft Exchange Transport
+    - Microsoft Exchange Transport Log Search
+    - Microsoft Exchange Unified Messaging
+    - Microsoft Exchange Unified Messaging Call Router
+    - Microsoft Filtering Management Service
+  BKK-N01-DC01:
+    - Active Directory Domain Services
+    - DNS Server
+  BKK-N01-DC02:
+    - Active Directory Domain Services
+    - DNS Server
+  BKK-WSUS:
+    - WSUS Service
+    - Windows Font Cache Service
+    - Storage Service
+    - State Repository Service
+    - SSDP Discovery
+  BKK-MOD-DEV01:
+    - Moodle Cron
+    - moodleApache
+    - moodleMySQL
+  BKK-WPS-002:
+    - Apache2.4
+    - mysql  
+  BKK-FS01-Sec:
+    - Cluster Service
+    - File Server Resource Manager
+    - SMB Witness
+    #- Microsoft FTP Service
+    - Microsoft iSCSI Initiator Service
+    - Microsoft Storage Spaces SMP
+  BKK-FS02:
+    - Cluster Service
+    - File Server Resource Manager
+    - SMB Witness
+   # - Microsoft FTP Service
+    - Microsoft iSCSI Initiator Service
+    - Microsoft Storage Spaces SMP
+
+
+  BKK-GRAFANA:
+    - grafana-server
+    - cron
+  BKK-SCRIPTS01:
+    - Azure AD Connect Health Sync Insights Service
+    - Azure AD Connect Health Sync Monitoring Service
+    - Microsoft Azure AD Sync
+    - Microsoft Online Services Sign-in Assistant
+
+  BKK-NAG-001:
+    - omd
+    - nagios
+  # Netbox-IPAM:
+  #   - ufw
+
+  
+
