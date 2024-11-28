@@ -23,7 +23,7 @@
       ansible.windows.win_service:
         name: "{{ service }}"
       register: check_result
-      until: check_result.status == 'running'
+      until: check_result.state == 'running'
       retries: 15
       delay: 20
 
@@ -33,7 +33,7 @@
         postcheckservice: "{{ postcheckservice | default([]) + [ service ] }}"
       when: 
         - ansible_facts['os_family'] == 'Windows'
-        - check_result.status == 'running'
+        - check_result.state == 'running'
 
     # แสดงผลลัพธ์
     - name: Show post-check services
