@@ -1,0 +1,19 @@
+---
+- name: Monitor and Restart Service on Windows
+  hosts: windows_servers
+  tasks:
+    - name: Check if service is running
+      ansible.windows.win_service_info:
+        name: MyWindowsService
+      register: service_status
+
+    - name: Restart the service if it is stopped
+      ansible.windows.win_service:
+        name: MyWindowsService
+        state: started
+      when: service_status.status != 'running'
+
+    - name: Notify admin if service was restarted
+      ansible.builtin.debug:
+        msg: "The service 'MyWindowsService' was found stopped and has been restarted."
+      when: service_status.status != 'running'
