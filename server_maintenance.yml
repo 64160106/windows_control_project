@@ -48,7 +48,7 @@
 
     ### Reboot the server
     - name: Reboot
-      include_tasks: ./reboot.yaml
+      include_tasks: reboot.yaml
 
     ### Post-check service after reboot
     - name: Post-check service after Reboot
