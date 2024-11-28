@@ -2,73 +2,71 @@
 - name: Server Maintenance
   hosts: all
 
-### Loading list of service and list of command
+  # Loading the list of services and list of commands
   vars_files:
-    - services.yaml
-    - listcommand.yaml
-  
-### Setting parametre
+    - services.yaml  # ตรวจสอบให้ path ถูกต้อง
+    - listcommand.yaml  # ตรวจสอบให้ path ถูกต้อง
+
   tasks:
     - name: Set Variable
       set_fact:
-         precheckservice: []
-         postcheckservice: []
-         running: []
-         missing: []
+        precheckservice: []
+        postcheckservice: []
+        running: []
+        missing: []
+
     - name: Check variable
       debug: var=inventory_hostname
 
-### Task Check Service Before reboot by call playbook name "pre_check_services.yaml" and looping task by list of service in service.yaml file. And It will run this task only if it found list of service in inventory_hostname       
+    ### Pre-check service before reboot
     - name: Pre-check service before Reboot
       include_tasks: pre_check_services.yaml
       loop: "{{ services[inventory_hostname] }}"
       loop_control:
-        loop_var: service 
+        loop_var: service
       ignore_errors: yes
       when: services[inventory_hostname] is defined
 
-      
-### Task run command before reboot by call playbook name "runcommand.yaml" and looping task by list of command in listcommand.yaml file. And It will run this task when it check the inventory_hostname is not windows      
+    ### Run command before reboot (non-Windows servers only)
     - name: Run command before reboot
       include_tasks: runcommand.yaml
       loop: "{{ commands[inventory_hostname] }}"
       loop_control:
         loop_var: command
       ignore_errors: yes
-      when: ansible_facts['os_family'] != "Windows"   
+      when: ansible_facts['os_family'] != "Windows"
 
-### Task reboot server by call playbook reboot.yaml
+    ### Reboot the server
     - name: Reboot
       include_tasks: reboot.yaml
 
-
-### Task Check service after reboot by call playbook name "post_check_services.yaml" and looping task by list of service in service.yaml file. And It will run this task only if it found list of service in inventory_hostname
-    - name: Post-check service before Reboot
+    ### Post-check service after reboot
+    - name: Post-check service after Reboot
       include_tasks: post_check_services.yaml
       loop: "{{ services[inventory_hostname] }}"
       loop_control:
-        loop_var: service 
+        loop_var: service
       ignore_errors: yes
       when: services[inventory_hostname] is defined
 
+    ### Debug: Show pre-check services
     - name: Show pre-check services
       debug: var=precheckservice
-      
 
+    ### Debug: Show post-check services
     - name: Show post-check services
       debug: var=postcheckservice
 
-
- ### Compare precheckservice and postcheckservice if it equal, it meant OA successfully. if not, It will show fail   
+    ### Summary
     - name: Summary
       debug:
         msg: >
-             {% if precheckservice == postcheckservice -%}
-                OA {{inventory_hostname}} has successfully
-             {% else -%}
-                Not pass
-                  - All = {{ services[inventory_hostname] }}
-                  - Running = {{ postcheckservice }}
-                  - Missing = {{ missing }}
-             {% endif %}
+          {% if precheckservice == postcheckservice %}
+            OA {{ inventory_hostname }} has successfully passed.
+          {% else %}
+            Not pass:
+              - All services: {{ services[inventory_hostname] }}
+              - Running services: {{ postcheckservice }}
+              - Missing services: {{ missing }}
+          {% endif %}
       failed_when: "precheckservice != postcheckservice"
