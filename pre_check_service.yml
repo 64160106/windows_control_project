@@ -1,54 +1,33 @@
 ---
+- name: Pre-check for windows
+  hosts: windows_servers
+  tasks:
+    # ตรวจสอบบริการที่ระบุว่ามีอยู่หรือไม่
+    - name: (Windows) Pre-check service ({{ service }})
+      ansible.windows.win_service:
+        name: "{{ service }}"  # ใส่เครื่องหมายคำพูดรอบตัวแปร service
+      register: check_result
+      when: ansible_facts['os_family'] == "Windows"
 
-#Pre-check for windows
-- name: (Window) Pre-check service ({{ service }})
-  ansible.windows.win_service:
-    name: "{{ service }}"
-  register: check_result
-  when: ansible_facts['os_family'] == "Windows"
+    # ตรวจสอบว่า Service มีอยู่หรือไม่และเก็บไว้ใน precheckservice
+    - name: (Windows) Append if service exists
+      set_fact:
+        precheckservice: "{{ precheckservice | default([]) + [ service ] }}"
+      when: check_result.exists == true
 
-# - name: (Window) Ensure service ({{ service }}) starts before reboot
-#   win_service:
-#     name: "{{ service }}"
-#     state: started
-#   when: ansible_facts['os_family'] == "Windows"  
+    # ตรวจสอบว่า Service หายไปและเก็บไว้ใน missing
+    - name: (Windows) Append if service is missing
+      set_fact:
+        missing: "{{ missing | default([]) + [ service ] }}"
+      when: check_result.exists == false
 
-- name: (Window) Append if service is exists 
-  set_fact:
-    precheckservice: "{{ precheckservice + [ service ] }}"
-  when: 
-    - ansible_facts['os_family'] == 'Windows'
+    # แสดงผลลัพธ์ที่ตรวจพบ
+    - name: Show services that exist
+      debug:
+        msg: "The following services exist: {{ precheckservice }}"
+      when: precheckservice | length > 0
 
-# Pre-check for linux
-- name: (Linux) Pre-check service ({{ service }})
-  service:
-    name: "{{ service }}"
-  register: check_result
-  when: ansible_facts['os_family'] != "Windows"
-
-- name: (Linux) Ensure service ({{ service }}) starts before reboot
-  service:
-    name: "{{ service }}"
-    state: started
-  when: ansible_facts['os_family'] != "Windows"  
-
-- name: (Linux) Append if service is running 
-  set_fact:
-    precheckservice: "{{ precheckservice + [ service ] }}"
-  when: 
-    - ansible_facts['os_family'] != "Windows"
-    - check_result.status['ActiveState'] == 'active'
-
-
-# - name: Show result ("{{ service }}"")
-#   debug:
-#     msg: "{% if check_result['exists'] == true %}Found{% else %}'Not found{% endif %}"
-
-# - name: Append if service is missing ("{{ service }}")
-#   set_fact:
-#     missing: "{{ missing + [ service ] }}"
-#   when: "not check_result.exists"
-
-
-
-
+    - name: Show services that are missing
+      debug:
+        msg: "The following services are missing: {{ missing }}"
+      when: missing | length > 0
