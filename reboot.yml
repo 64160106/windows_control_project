@@ -19,9 +19,8 @@
       when: timestmp is defined
 
     - name: Holding 300 seconds for service to start (Windows)
-      wait_for:
+      win_wait_for:
         timeout: 300
-        delay: 0
       when: ansible_facts['os_family'] == "Windows"
 
     - name: Get timestamp after holding (Windows)
