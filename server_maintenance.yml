@@ -4,8 +4,8 @@
 
   # Loading the list of services and list of commands
   vars_files:
-    - C:\projects\win_control_project\services.yaml  # ตรวจสอบให้ path ถูกต้อง
-    - C:\projects\win_control_project\listcommand.yaml  # ตรวจสอบให้ path ถูกต้อง
+    - 'C:/projects/win_control_project/services.yaml'  # ใช้ '/' แทน '\\' หรือใช้ 'C:\\'
+    - 'C:/projects/win_control_project/listcommand.yaml'  # ใช้ '/' แทน '\\'
 
   tasks:
     - name: Set Variable
