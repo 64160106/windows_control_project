@@ -1,41 +1,42 @@
 ---
+- name: Post-check for windows
+  hosts: all
+  vars:
+    service: "wuauserv"  # ระบุชื่อบริการ
+    postcheckservice: []  # ค่าเริ่มต้นสำหรับผลลัพธ์
 
-#post-check for windows
-- name: (Window) Post-check service ({{ service }})
-  ansible.windows.win_service:
-    name: windows_servers
-  
-  when: ansible_facts['os_family'] == "Windows"
+  tasks:
+    # ตรวจสอบสถานะบริการ
+    - name: (Window) Post-check service ({{ service }})
+      ansible.windows.win_service:
+        name: "{{ service }}"
+      register: check_result
+      when: ansible_facts['os_family'] == "Windows"
 
-- name: (Window) Ensure Window service ({{ service }}) starts after rebooted
-  win_service:
-    name: "{{ service }}"
-    state: started
-  register: check_result
-  until: check_result.state == 'running'
-  retries: 15
-  delay: 20
-  when: ansible_facts['os_family'] == "Windows"  
+    # ตรวจสอบว่าบริการเริ่มต้นใหม่หรือไม่หลังจากรีบูต
+    - name: (Window) Ensure Window service ({{ service }}) starts after rebooted
+      win_service:
+        name: "{{ service }}"
+        state: started
 
-- name: (Window) Append if service is running 
-  set_fact:
-    postcheckservice: "{{ postcheckservice + [ service ] }}"
-  when: 
-    - ansible_facts['os_family'] == 'Windows'
-    - check_result.state == 'running'
+    - name: (Window) Wait for service to be running
+      ansible.windows.win_service:
+        name: "{{ service }}"
+      register: check_result
+      until: check_result.status == 'running'
+      retries: 15
+      delay: 20
 
+    # เก็บผลลัพธ์หากบริการกำลังทำงาน
+    - name: (Window) Append if service is running 
+      set_fact:
+        postcheckservice: "{{ postcheckservice | default([]) + [ service ] }}"
+      when: 
+        - ansible_facts['os_family'] == 'Windows'
+        - check_result.status == 'running'
 
-
-
-# - name: Show result ("{{ service }}"")
-#   debug:
-#     msg: "{% if check_result['exists'] == true %}Found{% else %}'Not found{% endif %}"
-
-# - name: Append if service is missing ("{{ service }}")
-#   set_fact:
-#     missing: "{{ missing + [ service ] }}"
-#   when: "not check_result.exists"
-
-
-
-
+    # แสดงผลลัพธ์
+    - name: Show post-check services
+      debug:
+        msg: "The following services are running after reboot: {{ postcheckservice }}"
+      when: postcheckservice | length > 0
