@@ -1,0 +1,11 @@
+---
+### When a new maintenance server have command to run. Add here
+commands:
+  BKK-NAG-001:
+    - yum updateinfo
+    - yum -y update
+  Netbox-IPAM:
+    # - ls
+    # - date
+    - apt list --upgradable
+    #- sudo apt upgrade     

@@ -1,0 +1,74 @@
+---
+- name: Server Maintenance
+  hosts: all
+
+### Loading list of service and list of command
+  vars_files:
+    - services.yaml
+    - listcommand.yaml
+  
+### Setting parametre
+  tasks:
+    - name: Set Variable
+      set_fact:
+         precheckservice: []
+         postcheckservice: []
+         running: []
+         missing: []
+    - name: Check variable
+      debug: var=inventory_hostname
+
+### Task Check Service Before reboot by call playbook name "pre_check_services.yaml" and looping task by list of service in service.yaml file. And It will run this task only if it found list of service in inventory_hostname       
+    - name: Pre-check service before Reboot
+      include_tasks: pre_check_services.yaml
+      loop: "{{ services[inventory_hostname] }}"
+      loop_control:
+        loop_var: service 
+      ignore_errors: yes
+      when: services[inventory_hostname] is defined
+
+      
+### Task run command before reboot by call playbook name "runcommand.yaml" and looping task by list of command in listcommand.yaml file. And It will run this task when it check the inventory_hostname is not windows      
+    - name: Run command before reboot
+      include_tasks: runcommand.yaml
+      loop: "{{ commands[inventory_hostname] }}"
+      loop_control:
+        loop_var: command
+      ignore_errors: yes
+      when: ansible_facts['os_family'] != "Windows"   
+
+### Task reboot server by call playbook reboot.yaml
+    - name: Reboot
+      include_tasks: reboot.yaml
+
+
+### Task Check service after reboot by call playbook name "post_check_services.yaml" and looping task by list of service in service.yaml file. And It will run this task only if it found list of service in inventory_hostname
+    - name: Post-check service before Reboot
+      include_tasks: post_check_services.yaml
+      loop: "{{ services[inventory_hostname] }}"
+      loop_control:
+        loop_var: service 
+      ignore_errors: yes
+      when: services[inventory_hostname] is defined
+
+    - name: Show pre-check services
+      debug: var=precheckservice
+      
+
+    - name: Show post-check services
+      debug: var=postcheckservice
+
+
+ ### Compare precheckservice and postcheckservice if it equal, it meant OA successfully. if not, It will show fail   
+    - name: Summary
+      debug:
+        msg: >
+             {% if precheckservice == postcheckservice -%}
+                OA {{inventory_hostname}} has successfully
+             {% else -%}
+                Not pass
+                  - All = {{ services[inventory_hostname] }}
+                  - Running = {{ postcheckservice }}
+                  - Missing = {{ missing }}
+             {% endif %}
+      failed_when: "precheckservice != postcheckservice"
