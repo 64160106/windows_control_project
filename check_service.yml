@@ -11,7 +11,7 @@
       win_service:
         name: MyWindowsService
         state: started
-      when: service_status.start_type != 'auto' or service_status.status != 'running'
+      when: service_status.status != 'running' or service_status.start_mode != 'Auto'
 
     - name: Log service status to a file
       win_lineinfile:
