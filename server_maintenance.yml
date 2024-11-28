@@ -1,9 +1,10 @@
 ---
 - name: Server Maintenance
   hosts: all
+
   vars_files:
-    - services.yml       # Load services list
-    - listcommand.yml    # Load list of commands
+    - services.yml
+    - listcommand.yml
 
   tasks:
     - name: Set Variable
@@ -14,48 +15,42 @@
         missing: []
 
     - name: Check variable
-      debug: var=inventory_hostname
+      debug:
+        var: inventory_hostname
 
-    ### Pre-check service before reboot
     - name: Pre-check service before Reboot
-      include_tasks: pre_check_services.yaml
+      include_tasks: "{{ playbook_dir }}/pre_check_services.yaml"
       loop: "{{ services[inventory_hostname] }}"
       loop_control:
         loop_var: service
       ignore_errors: yes
       when: services[inventory_hostname] is defined
 
-    ### Run command before reboot (non-Windows servers only)
     - name: Run command before reboot
-      include_tasks: runcommand.yaml
+      include_tasks: "{{ playbook_dir }}/runcommand.yaml"
       loop: "{{ commands[inventory_hostname] }}"
       loop_control:
         loop_var: command
       ignore_errors: yes
       when: ansible_facts['os_family'] != "Windows"
 
-    ### Reboot the server
     - name: Reboot Windows server
-      include_tasks: reboot.yaml
+      include_tasks: "{{ playbook_dir }}/reboot.yaml"  # ใช้ playbook_dir เพื่อระบุ path ของไฟล์ reboot.yaml ที่อยู่ในตำแหน่งเดียวกับ playbook
 
-    ### Post-check service after reboot
     - name: Post-check service after Reboot
-      include_tasks: post_check_services.yaml
+      include_tasks: "{{ playbook_dir }}/post_check_services.yaml"
       loop: "{{ services[inventory_hostname] }}"
       loop_control:
         loop_var: service
       ignore_errors: yes
       when: services[inventory_hostname] is defined
 
-    ### Debug: Show pre-check services
     - name: Show pre-check services
       debug: var=precheckservice
 
-    ### Debug: Show post-check services
     - name: Show post-check services
       debug: var=postcheckservice
 
-    ### Summary
     - name: Summary
       debug:
         msg: >
