@@ -1,0 +1,36 @@
+---
+
+#Pre-check for windows
+- name: (Window) Pre-check service ({{ service }})
+  ansible.windows.win_service:
+    name: "{{ service }}"
+  register: check_result
+  when: ansible_facts['os_family'] == "Windows"
+
+# - name: (Window) Ensure service ({{ service }}) starts before reboot
+#   win_service:
+#     name: "{{ service }}"
+#     state: started
+#   when: ansible_facts['os_family'] == "Windows"  
+
+- name: (Window) Append if service is exists 
+  set_fact:
+    precheckservice: "{{ precheckservice + [ service ] }}"
+  when: 
+    - ansible_facts['os_family'] == 'Windows'
+
+
+
+
+# - name: Show result ("{{ service }}"")
+#   debug:
+#     msg: "{% if check_result['exists'] == true %}Found{% else %}'Not found{% endif %}"
+
+# - name: Append if service is missing ("{{ service }}")
+#   set_fact:
+#     missing: "{{ missing + [ service ] }}"
+#   when: "not check_result.exists"
+
+
+
+
