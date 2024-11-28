@@ -1,21 +1,9 @@
 ---
 - name: Server Maintenance
   hosts: all
-  vars:
-    services:
-      windowtest1:
-        - Windows Time
-        - WinRM
-      windowtest2:
-        - Group Policy Client
-      # Add other services here...
-
-    commands:
-      BKK-NAG-001:
-        - yum updateinfo
-        - yum -y update
-      Netbox-IPAM:
-        - apt list --upgradable
+  vars_files:
+    - services.yml       # Load services list
+    - listcommand.yml    # Load list of commands
 
   tasks:
     - name: Set Variable
@@ -48,9 +36,7 @@
 
     ### Reboot the server
     - name: Reboot Windows server
-      win_reboot:
-        reboot_timeout: 3600
-      when: ansible_facts['os_family'] == "Windows"
+      include_tasks: reboot.yaml
 
     ### Post-check service after reboot
     - name: Post-check service after Reboot
