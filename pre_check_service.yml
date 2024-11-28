@@ -3,6 +3,8 @@
   hosts: all
   vars:
     service: "wuauserv"  # กำหนดชื่อของ service ที่จะตรวจสอบ (Windows Update service)
+    missing: []  # กำหนดค่าเริ่มต้นสำหรับตัวแปร missing
+
   tasks:
     # ตรวจสอบบริการที่ระบุว่ามีอยู่หรือไม่
     - name: (Windows) Pre-check service ({{ service }})
