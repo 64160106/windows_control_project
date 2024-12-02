@@ -35,7 +35,7 @@
       when: ansible_facts['os_family'] != "Windows"
 
     - name: Reboot Windows server
-      include_tasks: "reboot.yaml"  # ใช้ playbook_dir เพื่อระบุ path ของไฟล์ reboot.yaml ที่อยู่ในตำแหน่งเดียวกับ playbook
+      include_tasks: "C:\projects\windows_control_project\reboot.yaml"  
 
     - name: Post-check service after Reboot
       include_tasks: "{{ playbook_dir }}/post_check_services.yaml"
