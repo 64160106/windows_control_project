@@ -35,8 +35,37 @@
       when: ansible_facts['os_family'] != "Windows"
 
     - name: Reboot Windows server
-      include_tasks: "{{ playbook_dir }}/reboot.yaml"
- 
+      block:
+        - name: Reboot Windows server
+          win_reboot:
+            reboot_timeout: 3600
+          when: ansible_facts['os_family'] == "Windows"
+
+        - name: Get timestamp before holding (Windows)
+          win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
+          register: timestmp
+          when: ansible_facts['os_family'] == "Windows"
+
+        - name: Debug timestamp before holding
+          debug:
+            msg: "Timestamp before holding: {{ timestmp.stdout }}"
+          when: timestmp is defined
+
+        - name: Holding 300 seconds for service to start (Windows)
+          win_wait_for:
+            timeout: 300
+          when: ansible_facts['os_family'] == "Windows"
+
+        - name: Get timestamp after holding (Windows)
+          win_shell: "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"
+          register: timestmp_after
+          when: ansible_facts['os_family'] == "Windows"
+
+        - name: Debug timestamp after holding
+          debug:
+            msg: "Timestamp after holding: {{ timestmp_after.stdout }}"
+          when: timestmp_after is defined
+
     - name: Post-check service after Reboot
       include_tasks: "{{ playbook_dir }}/post_check_services.yaml"
       loop: "{{ services[inventory_hostname] }}"
