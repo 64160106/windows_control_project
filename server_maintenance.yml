@@ -35,8 +35,8 @@
       when: ansible_facts['os_family'] != "Windows"
 
     - name: Reboot Windows server
-      include_tasks: "reboot.yaml"  
-
+      include_tasks: "{{ playbook_dir }}/reboot.yaml"
+ 
     - name: Post-check service after Reboot
       include_tasks: "{{ playbook_dir }}/post_check_services.yaml"
       loop: "{{ services[inventory_hostname] }}"
