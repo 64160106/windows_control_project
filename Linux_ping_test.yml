@@ -1,7 +1,7 @@
 ---
 - name: Test Ping to Linux Servers
-  hosts: 10.244.163.151
-  gather_facts: no
+  hosts: Linux
   tasks:
     - name: Ping Linux server
-      ansible.builtin.ping:
+      ping:
+      ansible_python_interpreter: /usr/bin/python3
