@@ -1,8 +1,10 @@
 ---
-- name: Test Ping to Linux Servers
-  hosts: Linux
-  gather_facts: no
-  tasks:
-    - name: Ping Linux server
-      ping:
+  - name: Test Ping to Linux Servers
+    hosts: Linux
+    gather_facts: no
+    vars:
       ansible_python_interpreter: /usr/bin/python3
+    tasks:
+      - name: Ping Linux server
+        ping:
+  
