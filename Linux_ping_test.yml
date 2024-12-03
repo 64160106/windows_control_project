@@ -1,6 +1,6 @@
 ---
 - name: Test Ping to Linux Servers
-  hosts: linux
+  hosts: Linux
   tasks:
     - name: Ping Linux server
       ping:
