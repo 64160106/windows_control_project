@@ -1,10 +1,8 @@
 ---
   - name: Test Ping to Linux Servers
-    hosts: Linux
-    gather_facts: no
-    vars:
-      ansible_python_interpreter: /usr/bin/python3
+    hosts: all
     tasks:
       - name: Ping Linux server
         ping:
+        become: true
   
