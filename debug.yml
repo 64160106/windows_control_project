@@ -1,0 +1,7 @@
+---
+- name: Test connection with debug
+  hosts: all
+  tasks:
+    - name: Display a message
+      debug:
+        msg: "Connection is working!"
