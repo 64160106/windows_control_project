@@ -1,7 +1,5 @@
----
-  - name: Test connectivity between control node and target node
-    hosts: all
-    tasks:
-      - name: Ensure connectivity using ping module
-        ansible.builtin.ping:
-  
+- name: Debugging Playbook
+  hosts: all
+  tasks:
+    - debug:
+        msg: "Connecting to {{ inventory_hostname }}"
