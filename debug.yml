@@ -1,7 +1,7 @@
 ---
-- name: Test connection with debug
-  hosts: linux_machines
-  tasks:
-    - name: Display a message
-      debug:
-        msg: "Connection is working!"
+  - name: Test connectivity between control node and target node
+    hosts: all
+    tasks:
+      - name: Ensure connectivity using ping module
+        ansible.builtin.ping:
+  
