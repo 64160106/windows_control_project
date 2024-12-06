@@ -1,6 +1,6 @@
 ---
 - name: Test connection with debug
-  hosts: all
+  hosts: linux_machines
   tasks:
     - name: Display a message
       debug:
