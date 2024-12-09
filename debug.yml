@@ -5,4 +5,5 @@
     tasks:
       - name: Send ping to host
         ping:
+          when: ansible_version.major == '2' and ansible_version.minor | int >= 10
   
