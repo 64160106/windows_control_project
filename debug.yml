@@ -1,5 +1,8 @@
-- name: Debugging Playbook
-  hosts: all
-  tasks:
-    - debug:
-        msg: "Connecting to {{ inventory_hostname }}"
+---
+  - name: Ping a Linux machine
+    hosts: linux_host
+    gather_facts: false
+    tasks:
+      - name: Send ping to host
+        ping:
+  
