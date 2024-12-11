@@ -1,6 +1,6 @@
 ---
   - name: Ping Linux server
-    hosts: linux_machines
+    hosts: 10.244.163.151
     gather_facts: no
     tasks:
       - name: Ping the server
